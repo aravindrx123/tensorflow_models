@@ -118,19 +118,19 @@ def evaluate_model(self, session, x_batch, labels, dropout):
 
 
 # Network Parameters
-num_hidden_1 = 256
-num_hidden_2 = 128
-num_input = 784
+hidden_1_size = 256
+hidden_2_size = 128
+input_size = 784
 num_classes = 10
 
 # Hyper parameters
 lr = 0.01
-dropout = 0.2
+dropout_prob = 0.2
 batch_size = 100
 num_epochs = 15
 display_step = 1
 
-model = feedForwardNet(num_input, num_hidden_1, num_hidden_2, num_classes)
+model = feedForwardNet(input_size, hidden_1_size, hidden_2_size, num_classes)
 
 # Train model
 init = tf.global_variables_initializer()
@@ -146,19 +146,19 @@ with tf.Session() as sess:
         for _ in range(total_batch):
             x, y = mnist.train.next_batch(batch_size)
             # Run optimization
-            _, c = model.train_on_batch(sess, x, y, lr, dropout)
+            _, c = model.train_on_batch(sess, x, y, lr, dropout_prob)
             avg_loss += c / total_batch
 
         if epoch % display_step == 0:
             # Model accuracy
-            accuracy = evaluate_model(model, sess, x, y, dropout)
+            accuracy = evaluate_model(model, sess, x, y, dropout_prob)
             print("Epoch:", epoch + 1, 'Loss:', avg_loss, 'Accuracy:', accuracy)
     print("....Training Finished!")
 
     # Predict on test set
     x_test = mnist.test.images
     y_test = mnist.test.labels
-    test_predictions = model.predict_for_batch(sess, x_test, dropout)
+    test_predictions = model.predict_for_batch(sess, x_test, dropout_prob)
 
     correct_test_predictions = tf.equal(tf.argmax(test_predictions, 1), tf.argmax(y_test, 1))
     # Calculate accuracy
